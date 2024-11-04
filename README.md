@@ -8,4 +8,4 @@ This is an application for sending images of specific objects authonomously usin
 
 Then pull the container from dockerhub in the node
 
-`sudo docker image pull dariodematties/ptzapp`
+`sudo docker image pull your_docker_hub_user_name/ptzapp`
