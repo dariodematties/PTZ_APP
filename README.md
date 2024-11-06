@@ -13,3 +13,8 @@ Then pull the container from dockerhub in the node
 ## Run the container
 
 `sudo docker run --gpus all -it --rm -v /path/to/the/PTZ_APP:/ptzapp -v /path/to/the/persistence/folder:/persistence your_docker_hub_user_name/ptzapp:latest`
+
+
+## Run the code from the container
+
+`python main.py -ki -it number_of_iterations -un camera_user_name -pw camera_password -ip camera_ip_address`
