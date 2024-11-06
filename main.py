@@ -12,13 +12,6 @@ def get_argparser():
     parser = argparse.ArgumentParser("PTZ APP")
     # PTZ application
     parser.add_argument(
-        "-fn",
-        "--fname",
-        type=str,
-        help="name of config file to load",
-        default="./configs/Config_file.yaml",
-    )
-    parser.add_argument(
         "-ki",
         "--keepimages",
         action="store_true",
@@ -85,6 +78,12 @@ def look_for_object(args):
     #zooms = [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3]
     #zooms = [20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20]
     #zooms = [40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40]
+
+
+    pans = [0, 90, 180, 270, 345]
+    tilts = [0, 0, 0, 0, 0]
+    zooms = [1, 1, 1, 1, 1]
+
     for pan, tilt, zoom in zip(pans, tilts, zooms):
         policy_net=None
         image_path, LABEL = get_image_from_ptz_position(args, object_, pan, tilt, zoom)

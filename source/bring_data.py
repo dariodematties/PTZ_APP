@@ -10,6 +10,7 @@ from pathlib import Path
 from source import sunapi_control as camera_control
 from source.florence_v2 import get_label_from_image_and_object
 
+from waggle.plugin import Plugin
 
 logger = logging.getLogger(__name__)
 
@@ -96,7 +97,7 @@ def center_and_maximize_object(args, bbox, image, reward=None):
     except Exception as e:
         logger.error("Error when setting relative position: %s", e)
 
-    time.sleep(3)
+    #time.sleep(3)
     ## Move the camera to center the object
     #camera.relative_control(pan=pan, tilt=tilt, zoom=0)
     
@@ -134,7 +135,7 @@ def center_and_maximize_object(args, bbox, image, reward=None):
     except Exception as e:
         logger.error("Error when setting relative position: %s", e)
 
-    time.sleep(3)
+    #time.sleep(3)
     ## Apply zoom (ensuring we don't exceed the maximum zoom)
     #camera.relative_control(pan=0, tilt=0, zoom=relative_zoom)
     if reward is not None and reward < 0.99:
@@ -165,7 +166,7 @@ def get_image_from_ptz_position(args, object_, pan, tilt, zoom):
 
     # reset the camera to its original position
     Camera1.absolute_control(pan, tilt, zoom)
-    time.sleep(1)
+    #time.sleep(1)
 
     tmp_dir.mkdir(exist_ok=True, mode=0o777)
 
@@ -189,16 +190,15 @@ def get_image_from_ptz_position(args, object_, pan, tilt, zoom):
 
 
 def publish_images():
-    # run tar -cvf images.tar /imgs
-    tar_images("images.tar", str(tmp_dir))
-    # files = glob.glob("/imgs/*.jpg", recursive=True)
-    shutil.rmtree(tmp_dir, ignore_errors=True)
-
     with Plugin() as plugin:
         ct = str(datetime.datetime.now())
-        os.rename("images.tar", ct + "_images.tar")
-        plugin.upload_file(ct + "_images.tar")
+        for image_file in os.listdir(tmp_dir):
+            complete_path = os.path.join(tmp_dir, image_file)
+            print('Publishing')
+            print(complete_path)
+            plugin.upload_file(complete_path)
 
+    shutil.rmtree(tmp_dir, ignore_errors=True)
 
 def get_fov_from_zoom(zoom_level):
     # Camera specifications
@@ -246,12 +246,4 @@ def grab_image(camera, args, action):
                 #)
         return None
     return img_path
-
-def tar_images(output_filename, folder_to_archive):
-    try:
-        cmd = ["tar", "cvf", output_filename, folder_to_archive]
-        output = subprocess.check_output(cmd).decode("utf-8").strip()
-        logger.info(output)
-    except Exception:
-        logger.exception("Error when tar images")
 
