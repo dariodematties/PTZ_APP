@@ -1,3 +1,4 @@
 transformers
 timm
 pywaggle[all]
+huggingface_hub

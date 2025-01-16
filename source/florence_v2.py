@@ -11,8 +11,20 @@ def get_label_from_image_and_object(image, prompt):
     device = "cpu"
     torch_dtype = torch.float32
 
-    model = AutoModelForCausalLM.from_pretrained("microsoft/Florence-2-large", torch_dtype=torch_dtype, trust_remote_code=True).to(device)
-    processor = AutoProcessor.from_pretrained("microsoft/Florence-2-large", trust_remote_code=True)
+    model_dir = "/hf_cache/microsoft/Florence-2-large"
+
+    model = AutoModelForCausalLM.from_pretrained(
+            model_dir,
+            torch_dtype=torch_dtype,
+            trust_remote_code=True,
+            local_files_only=True  # <--- prevents huggingface from hitting the internet
+            ).to(device)
+
+    processor = AutoProcessor.from_pretrained(
+            model_dir,
+            trust_remote_code=True,
+            local_files_only=True  # <--- prevents huggingface from hitting the internet
+            )
 
     #url = "https://huggingface.co/datasets/huggingface/documentation-images/resolve/main/transformers/tasks/car.jpg?download=true"
     #image = Image.open(requests.get(url, stream=True).raw)
