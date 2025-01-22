@@ -9,14 +9,17 @@ RUN pip install --upgrade pip
 RUN pip install -r requirements.txt
 
 # 3. Create a local cache directory for the model
-RUN mkdir -p /hf_cache/microsoft/Florence-2-large
+RUN mkdir -p /hf_cache/microsoft/Florence-2-base
+# RUN mkdir -p /hf_cache/microsoft/Florence-2-large
 
 # 4. Download the model files info /hf_cache/microsoft/Florence-2-large
 RUN huggingface-cli download \
-	microsoft/Florence-2-large \
+	microsoft/Florence-2-base \
+	# microsoft/Florence-2-large \
 	--repo-type model \
 	--cache-dir /hf_cache \
-	--local-dir /hf_cache/microsoft/Florence-2-large \
+	--local-dir /hf_cache/microsoft/Florence-2-base \
+	# --local-dir /hf_cache/microsoft/Florence-2-large \
 	--resume \
 	--force  # <-- ensures we overwrite any existing files or resume a download
 

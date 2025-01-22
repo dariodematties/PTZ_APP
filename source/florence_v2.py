@@ -11,7 +11,8 @@ def get_label_from_image_and_object(image, prompt):
     device = "cpu"
     torch_dtype = torch.float32
 
-    model_dir = "/hf_cache/microsoft/Florence-2-large"
+    model_dir = "/hf_cache/microsoft/Florence-2-base"
+    # model_dir = "/hf_cache/microsoft/Florence-2-large"
 
     model = AutoModelForCausalLM.from_pretrained(
             model_dir,
