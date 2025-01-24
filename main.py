@@ -5,6 +5,7 @@ import argparse
 
 import torch
 from PIL import Image
+from transformers import AutoProcessor, AutoModelForCausalLM 
 from source.bring_data import center_and_maximize_object, get_image_from_ptz_position, publish_images
 
 
@@ -87,15 +88,31 @@ def look_for_object(args):
     #zooms = [40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40]
 
 
-    pans = [0, 90, 180, 270, 345]
-    tilts = [0, 0, 0, 0, 0]
-    zooms = [1, 1, 1, 1, 1]
+    # pans = [0, 90, 180, 270, 345]
+    # tilts = [0, 0, 0, 0, 0]
+    # zooms = [1, 1, 1, 1, 1]
+    #
+    model_dir = "/hf_cache/microsoft/Florence-2-base"
+    # model_dir = "/hf_cache/microsoft/Florence-2-large"
+
+    model = AutoModelForCausalLM.from_pretrained(
+            model_dir,
+            torch_dtype=torch_dtype,
+            trust_remote_code=True,
+            local_files_only=True  # <--- prevents huggingface from hitting the internet
+            ).to(device)
+
+    processor = AutoProcessor.from_pretrained(
+            model_dir,
+            trust_remote_code=True,
+            local_files_only=True  # <--- prevents huggingface from hitting the internet
+            )
 
     
     for iteration in range(args.iterations):
         for pan, tilt, zoom in zip(pans, tilts, zooms):
             policy_net=None
-            image_path, LABEL = get_image_from_ptz_position(args, object_, pan, tilt, zoom)
+            image_path, LABEL = get_image_from_ptz_position(args, object_, pan, tilt, zoom, model, processor)
             reward = LABEL['reward']
             print(image_path)
             if LABEL is None or reward > 0.99:

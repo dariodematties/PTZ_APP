@@ -154,7 +154,7 @@ def center_and_maximize_object(args, bbox, image, reward=None):
         #os.remove(image_path)
 
 
-def get_image_from_ptz_position(args, object_, pan, tilt, zoom):
+def get_image_from_ptz_position(args, object_, pan, tilt, zoom, model, processor):
     iterations = args.iterations
 
     try:
@@ -173,7 +173,7 @@ def get_image_from_ptz_position(args, object_, pan, tilt, zoom):
     aux_image_path = grab_image(camera=Camera1, args=args, action=0)
     image = Image.open(aux_image_path)
     os.remove(aux_image_path)
-    rewards, bboxes, labels = get_label_from_image_and_object(image, object_)
+    rewards, bboxes, labels = get_label_from_image_and_object(image, object_, model, processor)
     print('rewards: ', rewards)
     if len(bboxes) > 0:
         #index = random.randint(0,len( labels )-1)
