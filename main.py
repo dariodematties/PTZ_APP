@@ -49,6 +49,18 @@ def get_argparser():
     parser.add_argument(
         "-ip", "--cameraip", help="The ip of the PTZ camera.", type=str, default=""
     )
+    parser.add_argument(
+        "-ps", "--panstep", help="The step of pan in degrees.", type=int, default=15
+    )
+    parser.add_argument(
+        "-tv", "--tilt", help="The tilt value in degrees.", type=int, default=0
+    )
+    parser.add_argument(
+        "-zm", "--zoom", help="The zoom value.", type=int, default=1
+    )
+    parser.add_argument(
+        "-mod", "--model", help="The model to use.", type=str, default="Florence-2-base"
+    )
 
     return parser
 
@@ -74,26 +86,20 @@ def look_for_object(args):
     device = "cpu"
     torch_dtype = torch.float32
 
-    #object_ = 'robot object'
-    #object_ = 'very tiny and distant objects'
-    #object_ = 'a camera dome'
     object_ = args.object
-    #pans = [150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150]
-    pans = [0, 15, 30, 45, 60, 75, 90, 105, 120, 135, 150, 165, 180, 195, 210, 225, 240, 255, 270, 285, 300, 315, 330, 345]
-    tilts = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-    zooms = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
-    #zooms = [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2]
-    #zooms = [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3]
-    #zooms = [20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20]
-    #zooms = [40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40]
+    pans = [angle for angle in range(0, 360, args.panstep)]
+    # pans = [0, 15, 30, 45, 60, 75, 90, 105, 120, 135, 150, 165, 180, 195, 210, 225, 240, 255, 270, 285, 300, 315, 330, 345]
+    tilts = [args.tilt for _ in range(len(pans))]
+    # tilts = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+    zooms = [args.zoom for _ in range(len(pans))]
+    # zooms = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
 
-
-    # pans = [0, 90, 180, 270, 345]
-    # tilts = [0, 0, 0, 0, 0]
-    # zooms = [1, 1, 1, 1, 1]
-    #
-    model_dir = "/hf_cache/microsoft/Florence-2-base"
-    # model_dir = "/hf_cache/microsoft/Florence-2-large"
+    if args.model == "Florence-2-base":
+        model_dir = "/hf_cache/microsoft/Florence-2-base"
+    elif args.model == "Florence-2-large":
+        model_dir = "/hf_cache/microsoft/Florence-2-large"
+    else:
+        raise ValueError("Model can only be Florence-2-base or Florence-2-large but got: ", args.model)
 
     model = AutoModelForCausalLM.from_pretrained(
             model_dir,
