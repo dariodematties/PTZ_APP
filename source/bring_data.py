@@ -41,6 +41,8 @@ def center_and_maximize_object(args, bbox, image, reward=None):
     print(f'y2: {y2}')
     print(f'image_width: {image_width}')
     print(f'image_height: {image_height}')
+
+
     # Calculate the center of the bounding box
     bbox_center_x = (x1 + x2) / 2
     bbox_center_y = (y1 + y2) / 2
@@ -172,6 +174,7 @@ def get_image_from_ptz_position(args, object_, pan, tilt, zoom, model, processor
 
     aux_image_path = grab_image(camera=Camera1, args=args, action=0)
     image = Image.open(aux_image_path)
+
     os.remove(aux_image_path)
     rewards, bboxes, labels = get_label_from_image_and_object(image, object_, model, processor)
     print('rewards: ', rewards)

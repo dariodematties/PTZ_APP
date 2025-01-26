@@ -101,6 +101,7 @@ def look_for_object(args):
             trust_remote_code=True,
             local_files_only=True  # <--- prevents huggingface from hitting the internet
             ).to(device)
+    model.eval()
 
     processor = AutoProcessor.from_pretrained(
             model_dir,
