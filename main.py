@@ -88,11 +88,8 @@ def look_for_object(args):
 
     object_ = args.object
     pans = [angle for angle in range(0, 360, args.panstep)]
-    # pans = [0, 15, 30, 45, 60, 75, 90, 105, 120, 135, 150, 165, 180, 195, 210, 225, 240, 255, 270, 285, 300, 315, 330, 345]
     tilts = [args.tilt for _ in range(len(pans))]
-    # tilts = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
     zooms = [args.zoom for _ in range(len(pans))]
-    # zooms = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
 
     if args.model == "Florence-2-base":
         model_dir = "/hf_cache/microsoft/Florence-2-base"
@@ -141,8 +138,9 @@ def look_for_object(args):
                 print(f'         following {label} object           ')
                 print('<<<<<<>>>>>>---------------------<<<<<<>>>>>>')
                 print('<<<<<<>>>>>>---------------------<<<<<<>>>>>>')
-                os.remove(image_path)
                 center_and_maximize_object(args, bbox, image, reward)
+
+            os.remove(image_path)
 
         publish_images()
 
