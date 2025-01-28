@@ -17,7 +17,7 @@ source:
 
 inputs:
   - id: "iterations"
-    type: "integer"
+    type: "int"
   - id: "object"
     type: "string"
   - id: "username"
