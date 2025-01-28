@@ -35,5 +35,3 @@ inputs:
   - id: "model"
     type: "string"
 
-selector:
-  resource.gpu: "true" # the selector is only to avoid the scheduler to schedule this plugin along with other heavy plugins
